@@ -4,6 +4,16 @@ const ApiError = require("../utils/ApiError");
 const ApiResponse = require("../utils/ApiResponse");
 const { getAdjacentSong, recordPlay } = require("../services/song.service");
 
+const getAllSongs = asyncHandler(async (req, res) => {
+  const songs = await Song.find()
+    .populate("artist", "name image")
+    .populate("album", "title coverImage");
+
+  return res.status(200).json(
+    new ApiResponse(200, { songs })
+  );
+});
+
 const getSongById = asyncHandler(async (req, res) => {
   const song = await Song.findById(req.params.id).populate("artist", "name image").populate("album", "title coverImage");
   if (!song) throw new ApiError(404, "Song not found");
@@ -29,4 +39,4 @@ const previousSong = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, { song: previous }));
 });
 
-module.exports = { getSongById, playSong, nextSong, previousSong };
+module.exports = { getSongById, playSong, nextSong, previousSong,getAllSongs };

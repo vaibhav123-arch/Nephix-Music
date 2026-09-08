@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { getSongById, playSong, nextSong, previousSong } = require("../controllers/song.controller");
+const { getSongById, playSong, nextSong, previousSong, getAllSongs} = require("../controllers/song.controller");
 const verifyJWT = require("../middlewares/auth.middleware");
 
 router.use(verifyJWT);
 
+router.get("/", getAllSongs);
 router.get("/:id", getSongById);
 router.post("/:id/play", playSong);
 router.get("/:id/next", nextSong);

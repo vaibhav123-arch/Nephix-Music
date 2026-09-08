@@ -5,7 +5,7 @@ const artistSchema = new mongoose.Schema(
         name:{type:String , required:true , trim:true , index:true},
         bio:{type:String , default:""},
         image:{type:String ,default:""},
-        genre:[{type:string , trim:true}]
+        genre:[{type:String , trim:true}]
     },
     {timestamps:true}
 );

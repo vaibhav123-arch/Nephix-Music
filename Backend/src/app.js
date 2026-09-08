@@ -1,5 +1,5 @@
 const express= require("express");
-const cookieparser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const {corsOrigin} = require("./config/env");
 const routes = require("./routes");
