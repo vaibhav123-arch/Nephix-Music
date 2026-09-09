@@ -1,22 +1,125 @@
-import { usePlayer } from "../context/PlayerProvider";
+import { useEffect, useRef } from "react";
+import {
+ 
+  SkipBack,
+  SkipForward,
+  Volume2,
+} from "lucide-react";
+import gsap from "gsap";
+import { usePlayer } from "../context/usePlayer";
 
 const PlayerBar = () => {
-  const { currentSong, isPlaying, togglePlayPause, next, previous } = usePlayer();
+  const {
+    currentSong,
+    isPlaying,
+    togglePlayPause,
+    next,
+    previous,
+    currentTime,
+    duration,
+    seek,
+    setVolume
+  } = usePlayer();
+
+  const playerRef = useRef(null);
+
+  useEffect(() => {
+    if (!currentSong || !playerRef.current) return;
+
+    gsap.fromTo(
+      playerRef.current,
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: "power3.out",
+      }
+    );
+  }, [currentSong]);
 
   if (!currentSong) return null;
 
+  const formatTime = (time) => {
+    if (!time || isNaN(time)) return "0:00";
+
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60)
+      .toString()
+      .padStart(2, "0");
+
+    return `${minutes}:${seconds}`;
+  };
+
   return (
-    <div className="player-bar">
-      <img src={currentSong.coverImage} alt={currentSong.title} />
-      <div>
-        <p>{currentSong.title}</p>
-        <p>{currentSong.artist?.name}</p>
+    <div ref={playerRef} className="player-bar">
+      <div className="player-song">
+        <img
+          src={currentSong.coverimage}
+          alt={currentSong.title}
+          className="player-cover"
+        />
+
+        <div className="player-song-info">
+          <p className="player-song-title">
+            {currentSong.title}
+          </p>
+
+          <p className="player-song-artist">
+            {currentSong.artist?.name}
+          </p>
+        </div>
       </div>
-      <div className="player-controls">
-        <button onClick={previous}>Previous</button>
-        <button onClick={togglePlayPause}>{isPlaying ? "Pause" : "Play"}</button>
-        <button onClick={next}>Next</button>
+
+      <div className="player-center">
+        <div className="player-controls">
+          <button onClick={previous} aria-label="Previous">
+            <SkipBack size={18} />
+          </button>
+
+          <button
+            className="player-play"
+            onClick={togglePlayPause}
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            <span className={isPlaying ? "pause-icon" : "play-icon"} />
+          </button>
+
+          <button onClick={next} aria-label="Next">
+            <SkipForward size={18} />
+          </button>
+        </div>
+
+        <div className="player-progress">
+          <span>{formatTime(currentTime)}</span>
+
+          <input
+            type="range"
+            min="0"
+            max={duration || 0}
+            value={currentTime}
+            onChange={(e) => seek(Number(e.target.value))}
+          />
+
+          <span>{formatTime(duration)}</span>
+        </div>
       </div>
+
+      <div className="player-volume">
+  <Volume2 size={18} />
+
+  <input
+    type="range"
+    min="0"
+    max="1"
+    step="0.01"
+    defaultValue="1"
+    onChange={(e) => setVolume(Number(e.target.value))}
+  />
+</div>
     </div>
   );
 };

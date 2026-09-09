@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import { PlayerContext } from "./PlayerContext";
 
@@ -11,13 +11,16 @@ import {
 export const PlayerProvider = ({ children }) => {
   const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+const [duration, setDuration] = useState(0);
 
   const audioRef = useRef(new Audio());
+ 
 
   const loadAndPlay = (song) => {
     setCurrentSong(song);
 
-    audioRef.current.src = song.fileUrl;
+    audioRef.current.src = song.fileurl;
 
     audioRef.current.play();
 
@@ -55,6 +58,35 @@ export const PlayerProvider = ({ children }) => {
 
     await play(res.data.data.song._id);
   };
+  const seek = (time) => {
+  audioRef.current.currentTime = time;
+  setCurrentTime(time);
+};
+
+const setVolume = (value) => {
+  audioRef.current.volume = value;
+};
+useEffect(() => {
+  const audio = audioRef.current;
+
+  const updateTime = () => setCurrentTime(audio.currentTime);
+  const updateDuration = () => setDuration(audio.duration);
+
+  const handleEnded = () => {
+  console.log("🔥 SONG ENDED — trying next song");
+  next();
+};
+
+  audio.addEventListener("timeupdate", updateTime);
+  audio.addEventListener("loadedmetadata", updateDuration);
+  audio.addEventListener("ended", handleEnded);
+
+  return () => {
+    audio.removeEventListener("timeupdate", updateTime);
+    audio.removeEventListener("loadedmetadata", updateDuration);
+    audio.removeEventListener("ended", handleEnded);
+  };
+}, [next]);
 
   return (
     <PlayerContext.Provider
@@ -64,7 +96,11 @@ export const PlayerProvider = ({ children }) => {
         play,
         togglePlayPause,
         next,
-        previous,
+       previous,
+       currentTime,
+       duration,
+       seek,
+       setVolume,
       }}
     >
       {children}
@@ -72,4 +108,3 @@ export const PlayerProvider = ({ children }) => {
   );
 };
 
-export const usePlayer = () => useContext(PlayerContext);

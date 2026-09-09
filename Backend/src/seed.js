@@ -35,20 +35,19 @@ const seed = async () => {
   });
 
   const songs = await Promise.all(
-    demoAudioUrls.map((url, index) =>
-      Song.create({
-        title: `Track ${index + 1}`,
-        artist: artist._id,
-        album: album._id,
-        trackNumber: index + 1,
-        duration: 240,
-        fileUrl: url,
-        coverImage: album.coverImage,
-        genre: "Electronic",
-      })
-    )
-  );
-
+  demoAudioUrls.map((url, index) =>
+    Song.create({
+      title: `Track ${index + 1}`,
+      artist: artist._id,
+      album: album._id,
+      tracknumber: index + 1,
+      duration: 240,
+      fileurl: url,
+      coverimage: album.coverImage,
+      genre: "Electronic",
+    })
+  )
+);
   console.log(`Seeded 1 artist, 1 album, ${songs.length} songs`);
   await mongoose.connection.close();
   process.exit(0);

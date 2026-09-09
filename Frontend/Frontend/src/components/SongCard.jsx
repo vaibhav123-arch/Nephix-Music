@@ -1,4 +1,4 @@
-import { usePlayer } from "../context/PlayerProvider";
+import { usePlayer } from "../context/usePlayer";
 
 const SongCard = ({ song }) => {
   const { play } = usePlayer();
