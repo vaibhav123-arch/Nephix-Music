@@ -1,5 +1,5 @@
 const Song = require("../models/song.model");
-const RecentlyPlayed = require("../models/RecentlyPlayed.model");
+const RecentlyPlayed = require("../models/recentlyPlayed.model");
 const { RECENTLY_PLAYED_LIMIT } = require("../config/constants");
 
 const getAdjacentSong = async (currentSongId, direction) => {
