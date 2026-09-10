@@ -1,6 +1,6 @@
 const Song = require("../models/song.model");
 const Album = require("../models/album.model");
-const Artist = require("../models/Artist.model");
+const Artist = require("../models/artist.model");
 
 // ==================== HELPER ====================
 
