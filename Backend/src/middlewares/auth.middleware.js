@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const asyncHandler = require("../utils/asyncHandler");
+const asyncHandler = require("../utils/AsyncHandler");
 const ApiError = require("../utils/ApiError");
 const { accessTokenSecret } = require("../config/env");
 const User = require("../models/User.model");
