@@ -1215,12 +1215,22 @@ trols {
 }
 
 .player-volume {
-  width: 150px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 10px;
-  color: var(--text-muted);
+  width: 160px;
+  min-width: 160px;
+}
+
+.player-volume svg {
+  flex-shrink: 0;
+}
+
+.player-volume input[type="range"] {
+  width: 100px;
+  height: 4px;
+  cursor: pointer;
+  accent-color: white;
 }
 
 .player-volume-line {
@@ -1339,4 +1349,10 @@ trols {
 .sidebar-logo:hover svg {
   filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
   transform: rotate(-8deg) scale(1.08);
+}
+.player-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
 }

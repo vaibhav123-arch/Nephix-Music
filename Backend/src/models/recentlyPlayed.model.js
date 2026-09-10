@@ -2,13 +2,50 @@ const mongoose = require("mongoose");
 
 const recentlyPlayedSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
-    song: { type: mongoose.Schema.Types.ObjectId, ref: "Song", required: true },
-    playedAt: { type: Date, default: Date.now },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    song: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Song",
+      required: false,
+    },
+
+    youtubeVideoId: {
+      type: String,
+      default: "",
+    },
+
+    youtubeTitle: {
+      type: String,
+      default: "",
+    },
+
+    youtubeChannel: {
+      type: String,
+      default: "",
+    },
+
+    youtubeThumbnail: {
+      type: String,
+      default: "",
+    },
+
+    playedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  { timestamps: false }
+  {
+    timestamps: true,
+  }
 );
 
-recentlyPlayedSchema.index({ user: 1, playedAt: -1 });
+const RecentlyPlayed =
+  mongoose.models.RecentlyPlayed ||
+  mongoose.model("RecentlyPlayed", recentlyPlayedSchema);
 
-module.exports = mongoose.model("RecentlyPlayed", recentlyPlayedSchema);
+module.exports = RecentlyPlayed;

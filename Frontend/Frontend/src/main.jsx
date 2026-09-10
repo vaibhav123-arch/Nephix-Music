@@ -7,13 +7,11 @@ import { PlayerProvider } from "./context/PlayerProvider";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <PlayerProvider>
-          <App />
-        </PlayerProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <AuthProvider>
+      <PlayerProvider>
+        <App />
+      </PlayerProvider>
+    </AuthProvider>
+  </BrowserRouter>
 );

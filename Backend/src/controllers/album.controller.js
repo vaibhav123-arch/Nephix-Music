@@ -10,10 +10,25 @@ const getAllAlbums = asyncHandler(async (req, res) => {
 });
 
 const getAlbumById = asyncHandler(async (req, res) => {
-  const album = await Album.findById(req.params.id).populate("artist", "name image");
-  if (!album) throw new ApiError(404, "Album not found");
-  const songs = await Song.find({ album: album._id }).sort({ trackNumber: 1 });
-  return res.status(200).json(new ApiResponse(200, { album, songs }));
+  const album = await Album.findById(req.params.id)
+    .populate("artist", "name image");
+
+  if (!album) {
+    throw new ApiError(404, "Album not found");
+  }
+
+  const songs = await Song.find({
+    album: album._id,
+  })
+    .populate("artist", "name image")
+    .sort({ tracknumber: 1 });
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      album,
+      songs,
+    })
+  );
 });
 
 const getAlbumsByArtist = asyncHandler(async (req, res) => {

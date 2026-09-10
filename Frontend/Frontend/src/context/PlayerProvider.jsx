@@ -1,5 +1,4 @@
-import { useRef, useState, useEffect } from "react";
-
+import { useRef, useState, useEffect, useCallback } from "react";
 import { PlayerContext } from "./PlayerContext";
 
 import {
@@ -10,14 +9,16 @@ import {
 
 export const PlayerProvider = ({ children }) => {
   const [currentSong, setCurrentSong] = useState(null);
+  const [youtubeSong, setYoutubeSong] = useState(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const audioRef = useRef(new Audio());
- 
 
   const loadAndPlay = (song) => {
+    setYoutubeSong(null);
     setCurrentSong(song);
 
     audioRef.current.src = song.fileurl;
@@ -33,74 +34,102 @@ const [duration, setDuration] = useState(0);
     loadAndPlay(res.data.data.song);
   };
 
-  const togglePlayPause = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
+  const playYouTube = (song) => {
+    audioRef.current.pause();
 
-    setIsPlaying(!isPlaying);
+    setCurrentSong(null);
+    setYoutubeSong(song);
+
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
   };
 
-  const next = async () => {
+  const togglePlayPause = () => {
+    if (youtubeSong) {
+      return;
+    }
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const next = useCallback(async () => {
     if (!currentSong) return;
 
     const res = await getNextSong(currentSong._id);
 
     await play(res.data.data.song._id);
-  };
+  }, [currentSong]);
 
-  const previous = async () => {
+  const previous = useCallback(async () => {
     if (!currentSong) return;
 
     const res = await getPreviousSong(currentSong._id);
 
     await play(res.data.data.song._id);
-  };
+  }, [currentSong]);
+
   const seek = (time) => {
-  audioRef.current.currentTime = time;
-  setCurrentTime(time);
-};
+    if (youtubeSong) return;
 
-const setVolume = (value) => {
-  audioRef.current.volume = value;
-};
-useEffect(() => {
-  const audio = audioRef.current;
-
-  const updateTime = () => setCurrentTime(audio.currentTime);
-  const updateDuration = () => setDuration(audio.duration);
-
-  const handleEnded = () => {
-  console.log("🔥 SONG ENDED — trying next song");
-  next();
-};
-
-  audio.addEventListener("timeupdate", updateTime);
-  audio.addEventListener("loadedmetadata", updateDuration);
-  audio.addEventListener("ended", handleEnded);
-
-  return () => {
-    audio.removeEventListener("timeupdate", updateTime);
-    audio.removeEventListener("loadedmetadata", updateDuration);
-    audio.removeEventListener("ended", handleEnded);
+    audioRef.current.currentTime = time;
+    setCurrentTime(time);
   };
-}, [next]);
+
+  const setVolume = (value) => {
+    audioRef.current.volume = value;
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const updateDuration = () => {
+      setDuration(audio.duration);
+    };
+
+    const handleEnded = () => {
+      next();
+    };
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("ended", handleEnded);
+
+    return () => {
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [next]);
 
   return (
     <PlayerContext.Provider
       value={{
         currentSong,
+        youtubeSong,
+
         isPlaying,
         play,
+        playYouTube,
+
         togglePlayPause,
         next,
-       previous,
-       currentTime,
-       duration,
-       seek,
-       setVolume,
+        previous,
+
+        currentTime,
+        duration,
+        seek,
+        setVolume,
       }}
     >
       {children}

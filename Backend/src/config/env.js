@@ -17,6 +17,7 @@ accessTokenExpiry : process.env.ACCESS_TOKEN_EXPIRY || "15 m",
 refreshTokenSecret : process.env.REFRESH_TOKEN_SECRET,
 refreshTokenExpiry : process.env.REFRESH_TOKEN_EXPIRY || "7d",
 googleClientId: process.env.GOOGLE_CLIENT_ID,
+youtubeApiKey: process.env.YOUTUBE_API_KEY,
 }; 
 
 

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import {
- 
   SkipBack,
   SkipForward,
   Volume2,
@@ -18,7 +17,7 @@ const PlayerBar = () => {
     currentTime,
     duration,
     seek,
-    setVolume
+    setVolume,
   } = usePlayer();
 
   const playerRef = useRef(null);
@@ -56,6 +55,8 @@ const PlayerBar = () => {
 
   return (
     <div ref={playerRef} className="player-bar">
+
+      {/* SONG INFO */}
       <div className="player-song">
         <img
           src={currentSong.coverimage}
@@ -74,8 +75,11 @@ const PlayerBar = () => {
         </div>
       </div>
 
+      {/* CENTER CONTROLS */}
       <div className="player-center">
+
         <div className="player-controls">
+
           <button onClick={previous} aria-label="Previous">
             <SkipBack size={18} />
           </button>
@@ -85,15 +89,22 @@ const PlayerBar = () => {
             onClick={togglePlayPause}
             aria-label={isPlaying ? "Pause" : "Play"}
           >
-            <span className={isPlaying ? "pause-icon" : "play-icon"} />
+            <span
+              className={
+                isPlaying ? "pause-icon" : "play-icon"
+              }
+            />
           </button>
 
           <button onClick={next} aria-label="Next">
             <SkipForward size={18} />
           </button>
+
         </div>
 
+        {/* PROGRESS */}
         <div className="player-progress">
+
           <span>{formatTime(currentTime)}</span>
 
           <input
@@ -101,25 +112,36 @@ const PlayerBar = () => {
             min="0"
             max={duration || 0}
             value={currentTime}
-            onChange={(e) => seek(Number(e.target.value))}
+            onChange={(e) =>
+              seek(Number(e.target.value))
+            }
           />
 
           <span>{formatTime(duration)}</span>
+
         </div>
+
       </div>
 
+      {/* VOLUME */}
       <div className="player-volume">
-  <Volume2 size={18} />
 
-  <input
-    type="range"
-    min="0"
-    max="1"
-    step="0.01"
-    defaultValue="1"
-    onChange={(e) => setVolume(Number(e.target.value))}
-  />
-</div>
+        <Volume2 size={20} />
+
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          defaultValue="1"
+          onChange={(e) =>
+            setVolume(Number(e.target.value))
+          }
+          aria-label="Volume"
+        />
+
+      </div>
+
     </div>
   );
 };
