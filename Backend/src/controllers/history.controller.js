@@ -1,4 +1,4 @@
-const RecentlyPlayed = require("../models/RecentlyPlayed.model");
+const RecentlyPlayed = require("../models/recentlyPlayed.model");
 const asyncHandler = require("../utils/AsyncHandler");
 const ApiResponse = require("../utils/ApiResponse");
 const { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } = require("../config/constants");
